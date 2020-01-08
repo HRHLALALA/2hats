@@ -44,6 +44,7 @@
   position: absolute;
   right:5%;
   bottom: 5%;
+  pointer-events: all;
 }
 
 .title{
@@ -65,4 +66,8 @@
 
 li{
   margin:5%;
+}
+
+ol{
+  list-style-type: none;
 }

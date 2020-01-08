@@ -3,7 +3,7 @@ import JSBI from "jsbi";
 import { Contract, Wavelet } from "wavelet-client";
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Form, Row, FormControl, InputGroup, Col, Button, Table } from 'react-bootstrap';
+import { Form, Row, FormControl, Col, Button, Table } from 'react-bootstrap';
 
 
 class App extends React.Component {
@@ -16,6 +16,7 @@ class App extends React.Component {
       isConnected: false,
       scores: [],
       voted: false,
+      isLogged: false,
       location: "",
       year: 0,
     }
@@ -24,7 +25,7 @@ class App extends React.Component {
     return (
       <div id="App">
         <div id="load_election_contract">
-          <h2 className = "title">Load Election Contract</h2>
+          <h2 className="title">LOAD ELECTION CONTRACT</h2>
           <Form>
             <Form.Group as={Row} controlId="inputNode">
               <Form.Label column sm="2">
@@ -60,7 +61,7 @@ class App extends React.Component {
               <Col sm="6">
                 <FormControl
                   placeholder="Contract"
-                  value="dedbbff51c2d6b43981a12ab2cff871fc20984f717402558c7abd1efbd06a7ae" />
+                  value="0748b7b0056b05d6537e390489c8f5a56a94d974a6fe31dcbb2bf491f48870e0" />
 
               </Col>
               <Col>
@@ -78,11 +79,11 @@ class App extends React.Component {
         </div>
 
         <div id="current_loading_results">
-          <h2 className = "title" >CURRENT VOTING RESULTS</h2>
+          <h2 className="title" >CURRENT VOTING RESULTS</h2>
           <Table borderless>
             {this.state.scores.map((item) => <tr><td>{item.name}</td><td align="right">{item.points} points</td></tr>)}
           </Table>
-          <p className = "notes"> * Election information is displayed once you load up the Contract.</p>
+          <p className="notes"> * Election information is displayed once you load up the Contract.</p>
         </div>
 
         <div id="ballot_paper">
@@ -94,21 +95,31 @@ class App extends React.Component {
           <ol id="votes">
             {this.state.scores.map((item) =>
               <li id={item.name} >
-                <input type="number" min={0} max={5} defaultValue={0}>
+                <input onKeyDown={() => { return false }} type="number" min={0} max={5} defaultValue={0}>
 
                 </input> {item.name}
               </li>
             )
             }
           </ol>
-          <div className = "notes">
-            {this.state.voted ? <p>- You have already voted</p> : <p></p>}
+          <div className="notes">
             <p>- Repeating candidate number is not allowed.</p>
             <p>- You can only vote once, multiple submit is not allowed.</p>
           </div>
-          <Button variant="outline-secondary" id="vote_button" disabled={this.state.voted} onClick={() => this.handleVote()}>Submit Vote</Button>
+
+          <Button variant="outline-secondary"
+            id="vote_button"
+            disabled={!this.state.isLogged || this.state.voted}
+            onClick={() => this.handleVote()}
+          >
+            {this.state.voted ? "You have already voted" : "Submit vote"}
+
+
+          </Button>
+
+
         </div>
-      </div>
+      </div >
     );
   }
 
@@ -132,12 +143,13 @@ class App extends React.Component {
     this.receive_scores();
 
     //this.setState(contract.test(wallet, 'scores', JSBI.BigInt(0)));
-    let isVoted = this.state.contract.test(this.state.wallet, 'voted', JSBI.BigInt(0)).logs[0].toLowerCase() == "true";
-    
+    let isVoted = this.state.contract.test(this.state.wallet, 'voted', JSBI.BigInt(0)).logs[0].toLowerCase() === "true";
+
     let year = this.state.contract.test(this.state.wallet, 'year', JSBI.BigInt(0)).logs[0];
     let location = this.state.contract.test(this.state.wallet, 'location', JSBI.BigInt(0)).logs[0];
-    this.setState({ voted: isVoted,year:year,location:location });
+    this.setState({ voted: isVoted, year: year, location: location, isLogged: true });
     this.handleListening();
+
   }
 
   async handleListening() {
@@ -145,7 +157,9 @@ class App extends React.Component {
       onRoundEnded: msg => {
         (async () => {
           await this.state.contract.fetchAndPopulateMemoryPages();
-          this.receive_scores()
+          this.receive_scores();
+          let isVoted = this.state.contract.test(this.state.wallet, 'voted', JSBI.BigInt(0)).logs[0].toLowerCase() === "true";
+          this.setState({ voted: isVoted });
         })();
       }
     });
@@ -159,7 +173,7 @@ class App extends React.Component {
   }
 
   async handleVote() {
-    let isVoted = this.state.contract.test(this.state.wallet, 'voted', JSBI.BigInt(0)).logs[0].toLowerCase() == "true";
+    let isVoted = this.state.contract.test(this.state.wallet, 'voted', JSBI.BigInt(0)).logs[0].toLowerCase() === "true";
     this.setState({ voted: isVoted });
     if (isVoted) {
       return;
@@ -170,6 +184,7 @@ class App extends React.Component {
       // let input = x.children[0];
       let name = selections[i].id;
       let input_value = selections[i].children[0].value;
+      if (input_value > 5 || input_value < 0) return;
       vote_result = vote_result + name + ":" + input_value.toString() + ";"
     }
     vote_result = vote_result.substring(0, vote_result.length - 1);
