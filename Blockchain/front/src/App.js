@@ -102,7 +102,7 @@ class App extends React.Component {
             )
             }
           </ol>
-          <div className="notes">
+          <div className="notes ballot_paper">
             <p>- Repeating candidate number is not allowed.</p>
             <p>- You can only vote once, multiple submit is not allowed.</p>
           </div>

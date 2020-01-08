@@ -35,16 +35,22 @@
   border-radius: 10px 10px 10px 10px;
 }
 
-.notes{
-  position: absolute;
-  bottom: 8%;
-
+.notes {
+  bottom: 4%;
+  color:blue;
 }
+
+.notes.ballot_paper{
+  margin-bottom: 8%;
+}
+
+
 #vote_button{
   position: absolute;
   right:5%;
   bottom: 5%;
   pointer-events: all;
+  height:2em;
 }
 
 .title{
@@ -57,6 +63,7 @@
   width:100%;
   text-align: center;
   padding-top:10%;
+  padding-bottom:10%;
 }
 
 #votes{
@@ -70,4 +77,19 @@ li{
 
 ol{
   list-style-type: none;
+  padding-bottom:10%;
+}
+
+@media screen and (max-width:992px){
+
+  #App{
+    display:block;
+    padding:2em;
+  }
+  ol{
+    padding:0;
+  }
+  .notes.ballot_paper {
+    margin-bottom: 3em;
+  }
 }
