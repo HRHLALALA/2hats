@@ -17,7 +17,7 @@ The UI design simply uses React-Bootstrap to guarantee the layout. The self-adap
 ```
 cd frontend
 npm install
-npm run serve
+npm start
 ```
 ## Preview
 ### Before connecting
