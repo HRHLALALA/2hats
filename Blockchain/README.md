@@ -20,11 +20,11 @@ npm install
 npm run serve
 ```
 ## Preview
-### Before connect
+### Before connecting
 ![-w1387](media/15784635168051/15784635977826.jpg)
 
-### After connect
+### After connecting
 ![-w1355](media/15784635168051/15784635791677.jpg)
 
-### Mobile
+### Mobile sight
 ![-w328](media/15784635168051/15784652803968.jpg)
