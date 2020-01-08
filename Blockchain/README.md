@@ -2,8 +2,8 @@
 
 This is my solution of my solution to the Blockchain Challenge on 2hats. 
 
-Backend: Rust
-Frontend: Reactjs + Webassembly
+* Backend: Rust
+* Frontend: Reactjs + Webassembly
 
 ## Struct Backend
 
